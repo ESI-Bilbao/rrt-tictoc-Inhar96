@@ -33,7 +33,7 @@ class Tic8 : public cSimpleModule
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
-    virtual void enviarPaqueteCola();
+    virtual void paketeaIlarara();
 
 };
 
@@ -58,7 +58,7 @@ void Tic8::handleMessage(cMessage *msg)
                     EV << "\nPaquete guardado en cola " << enlace;
 
                     if(channelOut[enlace]->isBusy()==false){
-                        enviarPaqueteCola();
+                        paketeaIlarara();
                     }
                 }else{ //Si hay paquetes en la cola: solo insertar
                     queueOut[enlace]->insert(p);
@@ -85,20 +85,20 @@ void Tic8::handleMessage(cMessage *msg)
                            EV << "\nqueue length: " << queueOut[0]->getLength();
 
                             if(!queueOut[enlace]->isEmpty() && !channelOut[enlace]->isBusy()){
-                                enviarPaqueteCola();
+                                paketeaIlarara();
                             }
                             break;
                         case 2://NAK
                             EV << "\nNAK recibido";
                             delete(p);
                             if(channelOut[0]->isBusy()==false){
-                                enviarPaqueteCola();
+                                paketeaIlarara();
                             }
                             break;
                     }
             }
 }
-void Tic8::enviarPaqueteCola(){
+void Tic8::paketeaIlarara(){
     int enlace=0;
     paketea* p=check_and_cast<paketea*> (queueOut[enlace]->front());
     send(p->dup(),"out",enlace);

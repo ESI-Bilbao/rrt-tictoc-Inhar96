@@ -52,11 +52,11 @@ network Tictoc8
             parameters:
                 @display("i=,gold;p=247,154");
         }
-        src: source {
+        itu: source {
             @display("p=66,77");
         }
     connections:
-        src.out --> tic.in++;
+        itu.out --> tic.in++;
         tic.out++ --> C --> toc.in++;
         tic.in++ <-- C <-- toc.out++;
         
