@@ -35,7 +35,7 @@ simple source
 
 network Tictoc8
 {
-    @display("bgb=337,229");
+    @display("bgb=549,319");
     types:
         channel C extends DatarateChannel
         {
@@ -44,21 +44,59 @@ network Tictoc8
             delay = 0.1ms;
         }
     submodules:
-        tic: Tic8 {
+        sar1: Tic8 {
             parameters:
-                @display("i=,cyan;p=105,154");
+                @display("i=,cyan;p=144,156");
         }
-        toc: Toc8 {
+        sar2: Tic8 {
             parameters:
-                @display("i=,gold;p=247,154");
+                @display("i=,cyan;p=289,62");
         }
-        itu: source {
-            @display("p=66,77");
+        sar5: Tic8 {
+            parameters:
+                @display("i=,cyan;p=289,230");
+        }
+        nod3: Toc8 {
+            parameters:
+                @display("i=,gold;p=406,62");
+        }
+        nod4: Toc8 {
+            parameters:
+                @display("i=,gold;p=415,230");
+        }
+        itu1: source {
+            @display("p=66,156");
+        }
+        itu2: source {
+            @display("p=105,62");
+        }
+        itu3: source {
+            @display("p=171,249");
         }
     connections:
-        itu.out --> tic.in++;
-        tic.out++ --> C --> toc.in++;
-        tic.in++ <-- C <-- toc.out++;
-        
-        
+
+        itu1.out --> sar1.in++;
+        itu2.out --> sar2.in++;
+        itu3.out --> sar5.in++;
+
+        sar1.out++ --> C --> sar2.in++;
+        sar2.out++ --> C --> sar1.in++;
+
+        sar1.out++ --> C --> sar5.in++;
+        sar5.out++ --> C --> sar1.in++;
+
+        sar2.out++ --> C --> nod3.in++;
+        nod3.out++ --> C --> sar2.in++;
+
+        sar2.out++ --> C --> nod4.in++;
+        nod4.out++ --> C --> sar2.in++;
+
+        sar5.out++ --> C --> sar2.in++;
+        sar2.out++ --> C --> sar5.in++;
+
+        sar5.out++ --> C --> nod4.in++;
+        nod4.out++ --> C --> sar5.in++;
+
+
+
 }

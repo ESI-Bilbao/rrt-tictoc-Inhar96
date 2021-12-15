@@ -27,8 +27,9 @@ class Tic8 : public cSimpleModule
   private:
     int seqAck;
     int seqNak;
-    cChannel* channelOut[1];
-    cQueue* queueOut[1];
+    cChannel* channelOut[2];
+    cQueue* queueOut[2];
+    double prob;
 
   protected:
     virtual void initialize() override;
@@ -43,17 +44,21 @@ Define_Module(Tic8);
 void Tic8::initialize()
 {
     channelOut[0]=gate("out", 0)->getTransmissionChannel();
-    queueOut[0]=new cQueue("queue1");
+    channelOut[1]=gate("out", 1)->getTransmissionChannel();
+
+    queueOut[0]=new cQueue("queue0");
+    queueOut[1]=new cQueue("queue1");
 }
 
 void Tic8::handleMessage(cMessage *msg)
 {
-        int enlace=0;
+        int enlace;
         paketea* p=check_and_cast<paketea*>(msg);
         if(strcmp(p->getSenderModule()->getClassName(),"source")==0){
         EV << "\nPaquete recibido de " << p->getSenderModule()->getClassName() << p->getSenderModule()->getIndex();
 
-        if(queueOut[0]->isEmpty()){ //Si la cola esta vacia: insertar y enviar
+
+            if(queueOut[0]->isEmpty()){
                     queueOut[enlace]->insert(p);
                     EV << "\nPaquete guardado en cola " << enlace;
 
