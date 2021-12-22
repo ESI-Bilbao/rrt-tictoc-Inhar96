@@ -38,6 +38,8 @@
  * packet paketea
  * {
  *     unsigned int Type;
+ *     unsigned int seq;
+ *     unsigned int source;
  * }
  * </pre>
  */
@@ -45,6 +47,8 @@ class paketea : public ::omnetpp::cPacket
 {
   protected:
     unsigned int Type;
+    unsigned int seq;
+    unsigned int source;
 
   private:
     void copy(const paketea& other);
@@ -65,6 +69,10 @@ class paketea : public ::omnetpp::cPacket
     // field getter/setter methods
     virtual unsigned int getType() const;
     virtual void setType(unsigned int Type);
+    virtual unsigned int getSeq() const;
+    virtual void setSeq(unsigned int seq);
+    virtual unsigned int getSource() const;
+    virtual void setSource(unsigned int source);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const paketea& obj) {obj.parsimPack(b);}

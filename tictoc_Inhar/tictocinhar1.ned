@@ -8,9 +8,17 @@
 //
 import ned.DatarateChannel;
 
+simple source
+{
+    parameters:
+        @display("i=block/source");
+    gates:
+        output out;
+}
 simple Tic8
 {
     parameters:
+        double prob1;
         @display("i=block/routing");
     gates:
         input in[];
@@ -25,13 +33,6 @@ simple Toc8
         input in[];
         output out[];
 }
-simple source
-{
-    parameters:
-        @display("i=block/source");
-    gates:
-        output out;
-}
 
 network Tictoc8
 {
@@ -44,6 +45,15 @@ network Tictoc8
             delay = 0.1ms;
         }
     submodules:
+        itu[3]: source {
+            @display("p=60,150");
+        }
+        //        itu2: source {
+        //            @display("p=105,62");
+        //        }
+        //        itu3: source {
+        //            @display("p=171,249");
+        //        }
         sar1: Tic8 {
             parameters:
                 @display("i=,cyan;p=144,156");
@@ -64,20 +74,12 @@ network Tictoc8
             parameters:
                 @display("i=,gold;p=415,230");
         }
-        itu1: source {
-            @display("p=66,156");
-        }
-        itu2: source {
-            @display("p=105,62");
-        }
-        itu3: source {
-            @display("p=171,249");
-        }
+
     connections:
 
-        itu1.out --> sar1.in++;
-        itu2.out --> sar2.in++;
-        itu3.out --> sar5.in++;
+        itu[0].out --> sar1.in++;
+        itu[1].out --> sar2.in++;
+        itu[2].out --> sar5.in++;
 
         sar1.out++ --> C --> sar2.in++;
         sar2.out++ --> C --> sar1.in++;
@@ -96,7 +98,7 @@ network Tictoc8
 
         sar5.out++ --> C --> nod4.in++;
         nod4.out++ --> C --> sar5.in++;
-
-
-
+        
+        nod3.out++ --> C --> nod4.in++;
+        nod4.out++ --> C --> nod3.in++;
 }

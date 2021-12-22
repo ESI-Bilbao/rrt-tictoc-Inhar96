@@ -4,3 +4,6 @@
 [filesystem "0feaa8861609|Ubuntu|11.0.7|/dev/sda5"]
 	timestampResolution = 11000 nanoseconds
 	minRacyThreshold = 6798 microseconds
+[filesystem "5159c3092607|Ubuntu|11.0.7|/dev/sda5"]
+	timestampResolution = 230 microseconds
+	minRacyThreshold = 3846 microseconds

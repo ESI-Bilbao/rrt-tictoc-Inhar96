@@ -15,4 +15,6 @@
 packet paketea{
 
  	unsigned int Type; 
+ 	unsigned int seq;
+ 	unsigned int source;
 }

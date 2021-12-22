@@ -182,6 +182,8 @@ Register_Class(paketea)
 paketea::paketea(const char *name, short kind) : ::omnetpp::cPacket(name,kind)
 {
     this->Type = 0;
+    this->seq = 0;
+    this->source = 0;
 }
 
 paketea::paketea(const paketea& other) : ::omnetpp::cPacket(other)
@@ -204,18 +206,24 @@ paketea& paketea::operator=(const paketea& other)
 void paketea::copy(const paketea& other)
 {
     this->Type = other.Type;
+    this->seq = other.seq;
+    this->source = other.source;
 }
 
 void paketea::parsimPack(omnetpp::cCommBuffer *b) const
 {
     ::omnetpp::cPacket::parsimPack(b);
     doParsimPacking(b,this->Type);
+    doParsimPacking(b,this->seq);
+    doParsimPacking(b,this->source);
 }
 
 void paketea::parsimUnpack(omnetpp::cCommBuffer *b)
 {
     ::omnetpp::cPacket::parsimUnpack(b);
     doParsimUnpacking(b,this->Type);
+    doParsimUnpacking(b,this->seq);
+    doParsimUnpacking(b,this->source);
 }
 
 unsigned int paketea::getType() const
@@ -226,6 +234,26 @@ unsigned int paketea::getType() const
 void paketea::setType(unsigned int Type)
 {
     this->Type = Type;
+}
+
+unsigned int paketea::getSeq() const
+{
+    return this->seq;
+}
+
+void paketea::setSeq(unsigned int seq)
+{
+    this->seq = seq;
+}
+
+unsigned int paketea::getSource() const
+{
+    return this->source;
+}
+
+void paketea::setSource(unsigned int source)
+{
+    this->source = source;
 }
 
 class paketeaDescriptor : public omnetpp::cClassDescriptor
@@ -293,7 +321,7 @@ const char *paketeaDescriptor::getProperty(const char *propertyname) const
 int paketeaDescriptor::getFieldCount() const
 {
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 1+basedesc->getFieldCount() : 1;
+    return basedesc ? 3+basedesc->getFieldCount() : 3;
 }
 
 unsigned int paketeaDescriptor::getFieldTypeFlags(int field) const
@@ -306,8 +334,10 @@ unsigned int paketeaDescriptor::getFieldTypeFlags(int field) const
     }
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<1) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<3) ? fieldTypeFlags[field] : 0;
 }
 
 const char *paketeaDescriptor::getFieldName(int field) const
@@ -320,8 +350,10 @@ const char *paketeaDescriptor::getFieldName(int field) const
     }
     static const char *fieldNames[] = {
         "Type",
+        "seq",
+        "source",
     };
-    return (field>=0 && field<1) ? fieldNames[field] : nullptr;
+    return (field>=0 && field<3) ? fieldNames[field] : nullptr;
 }
 
 int paketeaDescriptor::findField(const char *fieldName) const
@@ -329,6 +361,8 @@ int paketeaDescriptor::findField(const char *fieldName) const
     omnetpp::cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount() : 0;
     if (fieldName[0]=='T' && strcmp(fieldName, "Type")==0) return base+0;
+    if (fieldName[0]=='s' && strcmp(fieldName, "seq")==0) return base+1;
+    if (fieldName[0]=='s' && strcmp(fieldName, "source")==0) return base+2;
     return basedesc ? basedesc->findField(fieldName) : -1;
 }
 
@@ -342,8 +376,10 @@ const char *paketeaDescriptor::getFieldTypeString(int field) const
     }
     static const char *fieldTypeStrings[] = {
         "unsigned int",
+        "unsigned int",
+        "unsigned int",
     };
-    return (field>=0 && field<1) ? fieldTypeStrings[field] : nullptr;
+    return (field>=0 && field<3) ? fieldTypeStrings[field] : nullptr;
 }
 
 const char **paketeaDescriptor::getFieldPropertyNames(int field) const
@@ -411,6 +447,8 @@ std::string paketeaDescriptor::getFieldValueAsString(void *object, int field, in
     paketea *pp = (paketea *)object; (void)pp;
     switch (field) {
         case 0: return ulong2string(pp->getType());
+        case 1: return ulong2string(pp->getSeq());
+        case 2: return ulong2string(pp->getSource());
         default: return "";
     }
 }
@@ -426,6 +464,8 @@ bool paketeaDescriptor::setFieldValueAsString(void *object, int field, int i, co
     paketea *pp = (paketea *)object; (void)pp;
     switch (field) {
         case 0: pp->setType(string2ulong(value)); return true;
+        case 1: pp->setSeq(string2ulong(value)); return true;
+        case 2: pp->setSource(string2ulong(value)); return true;
         default: return false;
     }
 }

@@ -9,7 +9,7 @@ using namespace omnetpp;
 class source : public cSimpleModule{
     private:
         double lonmedia=1000;
-        double meanTime=2;
+        double meanTime=0.5;
         int seq=0;
         cMessage *event;
     protected:
@@ -29,9 +29,9 @@ void source::initialize(){
 }
 
 void source::handleMessage(cMessage *msg){
-    EV << "\nSending packet from source " << getIndex() << " At time " << simTime();
-    paketea* paquete=paketeaSortu();
 
+    paketea* paquete=paketeaSortu();
+    EV << "\nSending packet from source " << getIndex() << " At time " << simTime();
     send(paquete,"out");
     double t=exponential(2, 0);
     scheduleAt(simTime()+t, event);
@@ -39,15 +39,15 @@ void source::handleMessage(cMessage *msg){
 }
 
 paketea* source::paketeaSortu(){
-    char packetName[20];
-    sprintf(packetName,"source%dPacket%d",getIndex(),seq);
+    char izena[20];
+    sprintf(izena,"source%d Packet%d",getIndex(),seq);
 
-    paketea* p=new paketea(packetName);
+    paketea* p=new paketea(izena);
 
     p->setType(0);
 
     double l=exponential(lonmedia, 0);
-    EV << "\nPacket length: " << l;
+    EV << "\nPacket length: " << l << " Seq: " << seq;
     p->setBitLength(l);
     seq++;
     return p;
