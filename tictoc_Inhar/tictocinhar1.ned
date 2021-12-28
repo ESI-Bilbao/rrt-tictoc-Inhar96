@@ -96,23 +96,23 @@ network Tictoc8
         itu2.out --> sar2.in[4];
         itu3.out --> sar5.in[3];
 
-        sar1.out[0] --> C --> sar2.in[0];
-        sar2.out[2] --> C --> sar1.in[0];
+        sar1.out[0] --> C --> sar2.in[3];
+        sar2.out[3] --> C --> sar1.in[0];
 
-        sar1.out[1] --> C --> sar5.in[0];
+        sar1.out[1] --> C --> sar5.in[2];
         sar5.out[2] --> C --> sar1.in[1];
 
-        sar2.out[1] --> C --> nod3.in[0];
-        nod3.out[0] --> C --> sar2.in[1];
+        sar2.out[0] --> C --> nod3.in[0];
+        nod3.out[0] --> C --> sar2.in[0];
 
-        sar2.out[0] --> C --> nod4.in[0];
-        nod4.out[0] --> C --> sar2.in[2];
+        sar2.out[1] --> C --> nod4.in[0];
+        nod4.out[0] --> C --> sar2.in[1];
 
-        sar5.out[1] --> C --> sar2.in[3];
-        sar2.out[3] --> C --> sar5.in[1];
+        sar5.out[0] --> C --> sar2.in[2];
+        sar2.out[2] --> C --> sar5.in[0];
 
-        sar5.out[0] --> C --> nod4.in[1];
-        nod4.out[1] --> C --> sar5.in[2];
+        sar5.out[1] --> C --> nod4.in[1];
+        nod4.out[1] --> C --> sar5.in[1];
         
         nod3.out[1] --> C --> nod4.in[2];
         nod4.out[2] --> C --> nod3.in[1];
