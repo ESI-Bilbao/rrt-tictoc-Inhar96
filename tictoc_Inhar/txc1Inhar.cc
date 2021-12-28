@@ -35,8 +35,8 @@ class Tic8 : public cSimpleModule
   protected:
     virtual void initialize() override;
     virtual void handleMessage(cMessage *msg) override;
-    virtual void ilarakoPakBidali( int a) ;
-    virtual void paketeaKudeatu(paketea* p) ;
+    virtual void ilarakoPakBidali() ;
+    virtual void paketeaKudeatu(paketea* p, int a) ;
 
 };
 
@@ -59,7 +59,7 @@ void Tic8::handleMessage(cMessage *msg)
 {
 
         paketea* p=check_and_cast<paketea*>(msg);
-        EV << "\nPaquete recibido de " << p->getSenderModule()->getClassName() << p->getSenderModule()->getIndex();
+        EV << "\nPaquete recibido de " << p->getSenderModule()->getClassName() << p->getSenderModule()->getName();
 
         if(strcmp(p->getSenderModule()->getClassName(),"source")==0){ //paketea iturritik dator--> errorea 0
 
@@ -72,85 +72,81 @@ void Tic8::handleMessage(cMessage *msg)
 
             if(queueOut[lotura]->isEmpty()){
                     queueOut[lotura]->insert(p);
-                    EV << "\nPaquete guardado en cola " << lotura;
+                    EV << "\nPaketea " << lotura<<". ilaran";
 
                     if(channelOut[lotura]->isBusy()==false){
-                        ilarakoPakBidali(lotura);
+                        ilarakoPakBidali();
                     }
              }else{ //Si hay paquetes en la cola: solo insertar
                     queueOut[lotura]->insert(p);
-                    EV << "\nPaquete guardado en cola " << lotura;
+                    EV << "\nPaketea " << lotura<<". ilaran";
              }
         }
         else{//Paquete viene de otro nodo
-                EV << "\n If de paquetes llegados de nodo";
-
                 int type=p->getType();
-                EV << "\ntipo: " << type;
-                int gateIndex;
-                gateIndex=p->getArrivalGate()->getIndex();
-                EV << "\ngateIndex: " << gateIndex;
+
+                cGate* g=p->getArrivalGate();
+                int arrivalGateIndex = g -> getIndex();
+
+                EV << "\n " << getName()<< ": ";
                 switch(type){
                         case 0://Mensaje normal
-                            EV << "\nPaquete recibido";
-                            if(!queueOut[gateIndex]->isEmpty() && !channelOut[gateIndex]->isBusy()){
-                            paketeaKudeatu(p);
-                            }
+                            EV << "Paketea jaso da";
+                            paketeaKudeatu(p,arrivalGateIndex);
                             break;
                         case 1://ACK
-                            EV << "\nACK recibido";
+                            EV << "ACK jaso da";
                             delete(p);
-                            queueOut[gateIndex]->pop();
+                            queueOut[arrivalGateIndex]->pop();
 
-                            EV << "\nqueue length: " << queueOut[gateIndex]->getLength();
+                            EV << "\nqueue length: " << queueOut[arrivalGateIndex]->getLength();
 
-                            if(!queueOut[gateIndex]->isEmpty() && !channelOut[gateIndex]->isBusy()){
-                                ilarakoPakBidali(gateIndex);
+                            if(!queueOut[lotura]->isEmpty() && !channelOut[lotura]->isBusy()){
+                                ilarakoPakBidali();
                             }
                             break;
                         case 2://NAK
-                            EV << "\nNAK recibido";
+                            EV << "NAK jaso da";
                             delete(p);
-                            if(channelOut[gateIndex]->isBusy()==false){
-                                ilarakoPakBidali(gateIndex);
+                            if(channelOut[lotura]->isBusy()==false){
+                                ilarakoPakBidali();
                             }
                             break;
                     }
             }
 }
-void Tic8::ilarakoPakBidali(int lotura){
+void Tic8::ilarakoPakBidali(){
 
     paketea* p=check_and_cast<paketea*> (queueOut[lotura]->front());
     send(p->dup(),"out",lotura);
-
-    EV << "\nPaquete enviado por lotura " << lotura;
+    EV << "\n " << getName();
+    EV << ": Paketea " << lotura <<"-tik bidali da";
 }
 
-void Tic8::paketeaKudeatu(paketea* p){
-    cGate* g=p->getArrivalGate();
-
+void Tic8::paketeaKudeatu(paketea* p, int a){
+//    cGate* g=p->getArrivalGate();
+//    int arrivalGateIndex = g -> getIndex();
     if(p->hasBitError()){
             //NAK BIDALI
+            EV << "Paketea errorearekin jaso da, bidali NAK\n";
             paketea* nak=new paketea("NAK");
             nak->setSeq(seqNak);
-            EV << "\n nak sortuta: ";
-           // nak->setSource(getIndex());
+            nak->setSource(getId());
             nak->setType(2);
             seqNak++;
-            send(nak,"out",g->getIndex());
-            EV << "\nRespuesta " << nak->getName() << " enviada por lotura " << g->getIndex();
-
+            send(nak,"out",a);
+            EV << "\nNAK mezua bidali da hurrengo loturatik: " << a;
 
        }else{
         //ACK BIDALI
-        paketea* ack=new paketea("ACK");
-        ack->setSeq(seqAck);
-        ack->setSource(getIndex());
-        ack->setType(1);
-        seqAck++;
-
-        send(ack,"out",g->getIndex());
-        EV << "\nRespuesta " << ack->getName() << " enviada por lotura " << g->getIndex();
+           EV << "Paketea errorerik gabe jaso da, bidali ACK\n";
+           paketea* ack=new paketea("ACK");
+           ack->setSeq(seqAck);
+           ack->setSource(getId());
+           ack->setType(1);
+           seqAck++;
+           send(ack,"out",a);
+           EV << "\nACK mezua bidali da hurrengo loturatik: " << a;
 
         //PAKETEA BIRBIDALI
         double aux=((double)rand())/RAND_MAX;
@@ -165,7 +161,7 @@ void Tic8::paketeaKudeatu(paketea* p){
                     EV << "\nPaquete guardado en cola " << lotura;
 
                     if(channelOut[lotura]->isBusy()==false){
-                        ilarakoPakBidali(lotura);
+                        ilarakoPakBidali();
                     }
                 }else{ //Si hay paquetes en la cola: solo insertar
                     queueOut[lotura]->insert(p);
@@ -177,72 +173,7 @@ void Tic8::paketeaKudeatu(paketea* p){
 }
 
 
-class Toc8 : public cSimpleModule
-{
 
-private:
-   int seqAck;
-   int seqNak;
-   cChannel* channelOut[2];
-   cQueue* queueOut[2];
-   int lotura;
-
-  protected:
-    virtual void initialize() override;
-    virtual void handleMessage(cMessage *msg) override;
-
-};
-
-Define_Module(Toc8);
-
-void Toc8::initialize()
-{
-    channelOut[0]=gate("out", 0)->getTransmissionChannel();
-    channelOut[1]=gate("out", 1)->getTransmissionChannel();
-
-    queueOut[0]=new cQueue("queue0");
-    queueOut[1]=new cQueue("queue1");
-    seqAck=0;
-    seqNak=0;
-}
-void Toc8::handleMessage(cMessage *msg)
-{
-    paketea* p=check_and_cast<paketea*>(msg);
-
-       EV << "\nPaquete recibido de " << p->getSenderModule()->getClassName() << p->getSenderModule()->getIndex();
-
-       int type=p->getType();
-       if(type==0){
-           EV << "\nLehenengo IF-ean sartu da";
-           int gateIndex=p->getArrivalGate()->getIndex();
-
-           if(p->hasBitError()){
-               //SEND NAK
-               paketea* nak=new paketea("NAK");
-               if(!queueOut[gateIndex]->isEmpty() && !channelOut[gateIndex]->isBusy()){
-
-               nak->setType(2);
-               }
-                   send(nak,"out",gateIndex);
-
-               EV << "\nRespuesta " << nak->getName() << " enviada por enlace " << gateIndex;
-
-           }else{
-               //SEND ACK
-               paketea* ack=new paketea("ACK");
-
-               ack->setType(1);
-               if(!queueOut[gateIndex]->isEmpty() && !channelOut[gateIndex]->isBusy()){
-
-                   send(ack,"out",gateIndex);
-               }
-               EV << "\nRespuesta " << ack->getName() << " enviada por enlace " << gateIndex;
-               EV << "\nPaquete llegado a destino sin errores";
-
-
-           }
-       }
-}
 
 
 

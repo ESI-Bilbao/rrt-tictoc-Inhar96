@@ -45,60 +45,76 @@ network Tictoc8
             delay = 0.1ms;
         }
     submodules:
-        itu[3]: source {
+        itu1: source {
             @display("p=60,150");
         }
-        //        itu2: source {
-        //            @display("p=105,62");
-        //        }
-        //        itu3: source {
-        //            @display("p=171,249");
-        //        }
+        itu2: source {
+            @display("p=105,62");
+        }
+        itu3: source {
+            @display("p=171,249");
+        }
         sar1: Tic8 {
             parameters:
                 @display("i=,cyan;p=144,156");
+            gates:
+                in[3];
+                out[2]; 
         }
         sar2: Tic8 {
             parameters:
                 @display("i=,cyan;p=289,62");
+                gates:
+                in[5];
+                out[4];
         }
         sar5: Tic8 {
             parameters:
                 @display("i=,cyan;p=289,230");
+                gates:
+                in[4];
+                out[3];
         }
         nod3: Toc8 {
             parameters:
                 @display("i=,gold;p=406,62");
+                gates:
+                in[2];
+                out[2];
         }
         nod4: Toc8 {
             parameters:
                 @display("i=,gold;p=415,230");
+                gates:
+                in[3];
+                out[3];
         }
 
     connections:
 
-        itu[0].out --> sar1.in++;
-        itu[1].out --> sar2.in++;
-        itu[2].out --> sar5.in++;
+        itu1.out --> sar1.in[2];
+        itu2.out --> sar2.in[4];
+        itu3.out --> sar5.in[3];
 
-        sar1.out++ --> C --> sar2.in++;
-        sar2.out++ --> C --> sar1.in++;
+        sar1.out[0] --> C --> sar2.in[0];
+        sar2.out[2] --> C --> sar1.in[0];
 
-        sar1.out++ --> C --> sar5.in++;
-        sar5.out++ --> C --> sar1.in++;
+        sar1.out[1] --> C --> sar5.in[0];
+        sar5.out[2] --> C --> sar1.in[1];
 
-        sar2.out++ --> C --> nod3.in++;
-        nod3.out++ --> C --> sar2.in++;
+        sar2.out[1] --> C --> nod3.in[0];
+        nod3.out[0] --> C --> sar2.in[1];
 
-        sar2.out++ --> C --> nod4.in++;
-        nod4.out++ --> C --> sar2.in++;
+        sar2.out[0] --> C --> nod4.in[0];
+        nod4.out[0] --> C --> sar2.in[2];
 
-        sar5.out++ --> C --> sar2.in++;
-        sar2.out++ --> C --> sar5.in++;
+        sar5.out[1] --> C --> sar2.in[3];
+        sar2.out[3] --> C --> sar5.in[1];
 
-        sar5.out++ --> C --> nod4.in++;
-        nod4.out++ --> C --> sar5.in++;
+        sar5.out[0] --> C --> nod4.in[1];
+        nod4.out[1] --> C --> sar5.in[2];
         
-        nod3.out++ --> C --> nod4.in++;
-        nod4.out++ --> C --> nod3.in++;
+        nod3.out[1] --> C --> nod4.in[2];
+        nod4.out[2] --> C --> nod3.in[1];
+        
 }

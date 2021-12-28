@@ -31,19 +31,17 @@ void source::initialize(){
 void source::handleMessage(cMessage *msg){
 
     paketea* paquete=paketeaSortu();
-    EV << "\nSending packet from source " << getIndex() << " At time " << simTime();
+    EV << "\nPaketea bidali da " << getName() << " iturritik. Time: " << simTime();
     send(paquete,"out");
-    double t=exponential(2, 0);
+    double t=exponential(0.5, 0);
     scheduleAt(simTime()+t, event);
 
 }
 
 paketea* source::paketeaSortu(){
     char izena[20];
-    sprintf(izena,"source%d Packet%d",getIndex(),seq);
-
+    sprintf(izena,"%s Packet%d",getName(),seq);
     paketea* p=new paketea(izena);
-
     p->setType(0);
 
     double l=exponential(lonmedia, 0);
