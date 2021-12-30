@@ -1,0 +1,25 @@
+file 41012 1640900385                                           
+version 2
+run General-0-20211230-21:21:53-4007
+attr configname General
+attr datetime 20211230-21:21:53
+attr experiment General
+attr inifile omnetpp.ini
+attr iterationvars ""
+attr iterationvarsf ""
+attr measurement ""
+attr network Tictoc8
+attr processid 4007
+attr repetition 0
+attr replication #0
+attr resultdir results
+attr runnumber 0
+attr seedset 0
+
+vector 0 Tictoc8.nod4 denborak ETV
+vector 1 Tictoc8.nod3 denborak ETV
+0	422 14603 17 8749 1.236380194242 498.207920722134 495 0.004 7.233 505.946 1041.768174
+1	15025 4879 31 8677 1.886862221343 494.740520722134 165 0.02 4.049 164.152 303.34229
+0	19904 16315 8797 17777 501.999039196124 999.819839196124 531 0 6.765 557.951 1238.594941
+1	36219 4792 8769 17693 500.364120722134 994.923720722134 156 0 4.814 160.127 305.151213
+

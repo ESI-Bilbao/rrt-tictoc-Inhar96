@@ -171,9 +171,3 @@ void Tic8::paketeaKudeatu(paketea* p, int a){
                 EV << "\nPaquete guardado en cola " << lotura;
        }
 }
-
-
-
-
-
-

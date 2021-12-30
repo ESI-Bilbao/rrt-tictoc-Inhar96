@@ -22,7 +22,6 @@ Define_Module(source);
 
 void source::initialize(){
     event=new cMessage("event");
-
     double t=exponential(meanTime, 0);
     EV << "\nInitial time: " << t;
     scheduleAt(simTime()+t, event);
@@ -33,7 +32,7 @@ void source::handleMessage(cMessage *msg){
     paketea* paquete=paketeaSortu();
     EV << "\nPaketea bidali da " << getName() << " iturritik. Time: " << simTime();
     send(paquete,"out");
-    double t=exponential(0.5, 0);
+    double t=exponential(meanTime, 0);
     scheduleAt(simTime()+t, event);
 
 }
@@ -43,7 +42,8 @@ paketea* source::paketeaSortu(){
     sprintf(izena,"%s Packet%d",getName(),seq);
     paketea* p=new paketea(izena);
     p->setType(0);
-
+    p->setSeq(seq);
+    p->setSource(getId());
     double l=exponential(lonmedia, 0);
     EV << "\nPacket length: " << l << " Seq: " << seq;
     p->setBitLength(l);

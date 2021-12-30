@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <string.h>
 #include <omnetpp.h>
@@ -23,9 +21,9 @@ private:
    int seqNak;
    int jasotakoak;
 
-   cChannel* channelOut[2];
-   cQueue* queueOut[2];
+
    int lotura;
+   cOutVector denborakVector;
 
   protected:
     virtual void initialize() override;
@@ -37,11 +35,7 @@ Define_Module(Toc8);
 
 void Toc8::initialize()
 {
-    channelOut[0]=gate("out", 0)->getTransmissionChannel();
-    channelOut[1]=gate("out", 1)->getTransmissionChannel();
 
-    queueOut[0]=new cQueue("queue0");
-    queueOut[1]=new cQueue("queue1");
     seqAck=0;
     seqNak=0;
     jasotakoak=0;
@@ -49,6 +43,7 @@ void Toc8::initialize()
     WATCH(jasotakoak);
     WATCH(seqAck);
     WATCH(seqNak);
+    denborakVector.setName("denborak");
 }
 void Toc8::handleMessage(cMessage *msg)
 {
@@ -92,8 +87,8 @@ void Toc8::handleMessage(cMessage *msg)
                EV << "\nErantzuna " << ack->getName() << " bidali da " << gateIndex <<" loturatik";
               // EV << "\nPaquete llegado a destino sin errores";
                jasotakoak++;
+               denborakVector.record(p->getDuration().dbl());
 
            }
        }
 }
-
