@@ -62,6 +62,7 @@ void Tic8::handleMessage(cMessage *msg)
         EV << "\nPaquete recibido de " << p->getSenderModule()->getClassName() << p->getSenderModule()->getName();
 
         if(strcmp(p->getSenderModule()->getClassName(),"source")==0){ //paketea iturritik dator--> errorea 0
+            p->setJauziak(p->getJauziak()+1);
 
             double aux=((double)rand())/RAND_MAX;
                     if(aux<prob){
@@ -149,6 +150,8 @@ void Tic8::paketeaKudeatu(paketea* p, int a){
            EV << "\nACK mezua bidali da hurrengo loturatik: " << a;
 
         //PAKETEA BIRBIDALI
+           p->setJauziak(p->getJauziak()+1);
+
         double aux=((double)rand())/RAND_MAX;
                 if(aux<prob){
                     lotura=0;

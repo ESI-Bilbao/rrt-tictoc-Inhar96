@@ -24,6 +24,8 @@ private:
 
    int lotura;
    cOutVector denborakVector;
+   cLongHistogram jauziakHistograma;
+   cOutVector jauziakVector;
 
   protected:
     virtual void initialize() override;
@@ -43,7 +45,11 @@ void Toc8::initialize()
     WATCH(jasotakoak);
     WATCH(seqAck);
     WATCH(seqNak);
+
     denborakVector.setName("denborak");
+    jauziakHistograma.setName("jauziakHisto");
+    jauziakHistograma.setRangeAutoUpper(0, 10, 1.5);
+    jauziakVector.setName("jauziak");
 }
 void Toc8::handleMessage(cMessage *msg)
 {
@@ -88,6 +94,9 @@ void Toc8::handleMessage(cMessage *msg)
               // EV << "\nPaquete llegado a destino sin errores";
                jasotakoak++;
                denborakVector.record(p->getDuration().dbl());
+               p->setJauziak(p->getJauziak()+1);
+               jauziakVector.record(p->getJauziak());
+               jauziakHistograma.collect(p->getJauziak());
 
            }
        }

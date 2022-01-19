@@ -40,7 +40,7 @@
  *     unsigned int Type;
  *     unsigned int seq;
  *     unsigned int source;
- *  	//unsigned int saltoak;
+ *     unsigned int jauziak;
  * }
  * </pre>
  */
@@ -50,6 +50,7 @@ class paketea : public ::omnetpp::cPacket
     unsigned int Type;
     unsigned int seq;
     unsigned int source;
+    unsigned int jauziak;
 
   private:
     void copy(const paketea& other);
@@ -74,6 +75,8 @@ class paketea : public ::omnetpp::cPacket
     virtual void setSeq(unsigned int seq);
     virtual unsigned int getSource() const;
     virtual void setSource(unsigned int source);
+    virtual unsigned int getJauziak() const;
+    virtual void setJauziak(unsigned int jauziak);
 };
 
 inline void doParsimPacking(omnetpp::cCommBuffer *b, const paketea& obj) {obj.parsimPack(b);}
